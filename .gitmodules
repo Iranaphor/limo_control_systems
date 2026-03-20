@@ -1,0 +1,21 @@
+[submodule "external/environment_common"]
+	path = external/environment_common
+	url = https://github.com/LCAS/environment_common
+[submodule "external/stag_ros2"]
+	path = external/stag_ros2
+	url = https://github.com/Iranaphor/stag_ros2
+[submodule "external/verbaliser"]
+	path = external/verbaliser
+	url = https://github.com/iranaphor/verbaliser
+[submodule "external/vrviz_ros"]
+	path = external/vrviz_ros
+	url = https://github.com/iranaphor/vrviz_ros
+[submodule "external/topological_navigation"]
+	path = external/topological_navigation
+	url = https://github.com/lcas/topological_navigation
+[submodule "external/staggered_duckling_platooning"]
+	path = external/staggered_duckling_platooning
+	url = https://github.com/iranaphor/staggered_duckling_platooning
+[submodule "external/environment_template"]
+	path = external/environment_template
+	url = https://github.com/lcas/environment_template
