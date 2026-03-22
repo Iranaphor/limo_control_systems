@@ -19,3 +19,6 @@
 [submodule "external/environment_template"]
 	path = external/environment_template
 	url = https://github.com/lcas/environment_template
+[submodule "external/limo_platform"]
+	path = external/limo_platform
+	url = https://github.com/LCAS/limo_platform.git
