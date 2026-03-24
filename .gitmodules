@@ -18,7 +18,8 @@
 	url = https://github.com/iranaphor/staggered_duckling_platooning
 [submodule "external/environment_template"]
 	path = external/environment_template
-	url = https://github.com/lcas/environment_template
+    branch = rih0012
+	url = https://github.com/Iranaphor/riseholme_hall_rooms
 [submodule "external/limo_platform"]
 	path = external/limo_platform
 	url = https://github.com/LCAS/limo_platform.git
