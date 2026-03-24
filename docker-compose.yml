@@ -59,7 +59,7 @@ services:
       "
     volumes:
       - /dev:/dev
-      # - ${HOME}:/home/ros/robot_home
+      - ${HOME}:/home/ros/robot_home
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     runtime: nvidia
@@ -87,34 +87,29 @@ services:
   # ---------------------------------------------------------------------------
   # Research / development container
   # ---------------------------------------------------------------------------
-  ros2_limo:
+  limo_research:
     build:
       context: .
       dockerfile: Dockerfile
     pull_policy: never
     image: limo_control_systems:latest
-    container_name: ros2_limo
     stdin_open: true
     tty: true
     network_mode: host
-    privileged: true  # TEMP: testing joystick access
-
-    group_add:
-      - "107"  # host 'input' group — SDL2 needs read access to /dev/input/event*
-
+    privileged: true
+#    group_add:
+#      - "107"  # host 'input' group — SDL2 needs read access to /dev/input/event*
     devices:
       - /dev/input:/dev/input
-
     volumes:
       - ./external:/home/ros/ros2_ws/src/external:rw
       - ./local:/home/ros/ros2_ws/src/local:rw
       - ./start.sh:/home/ros/start.sh:rw
       - ./bash_aliases.sh:/home/ros/.bash_aliases.sh:rw
       - ./tmux.conf:/home/ros/.tmux.conf:rw
-      - colcon_cache:/home/ros/.colcon:rw
+#      - colcon_cache:/home/ros/.colcon:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /run/udev:/run/udev:ro
-
     environment:
       - DISPLAY=${DISPLAY:-:0}
       - QT_X11_NO_MITSHM=1
@@ -122,8 +117,6 @@ services:
       - TMULE_FILE=${TMULE_FILE:-}
       - SLEEP_TIME=${SLEEP_TIME:-infinity}
       - MARKER_FILE=/home/ros/.colcon/.first_run_done
-      - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1
-
     command: ["bash", "-l", "-c", "/home/ros/start.sh"]
 
 volumes:

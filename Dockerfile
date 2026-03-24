@@ -27,6 +27,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tmux \
     && rm -rf /var/lib/apt/lists/*
 
+#RUN apt-get update && apt-get install -y --no-install-recommends \
+#    libudev1 \
+#    && rm -rf /var/lib/apt/lists/*
+
 RUN (addgroup --gid ${GID} ${USERNAME} || true) \
     && (id -u ${USERNAME} >/dev/null 2>&1 || adduser --uid ${UID} --gid ${GID} --disabled-password --gecos "" ${USERNAME}) \
     && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
