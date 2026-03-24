@@ -2,34 +2,34 @@ services:
   # ---------------------------------------------------------------------------
   # limo_platform services (from external/limo_platform/configs/docker-compose.yaml)
   # ---------------------------------------------------------------------------
-  # filebrowser:
-  #   image: filebrowser/filebrowser
-  #   pull_policy: always
-  #   networks:
-  #     - rosnet
-  #   ports:
-  #     - 8080:8080
-  #   volumes:
-  #     - ${HOME}:/srv
-  #   command: -r /srv --noauth -b "${HOME}" -d /tmp/database.db -p 8080 --disable-exec
+  filebrowser:
+    image: filebrowser/filebrowser
+    pull_policy: always
+    networks:
+      - rosnet
+    ports:
+      - 8080:8080
+    volumes:
+      - ${HOME}:/srv
+    command: -r /srv --noauth -b "${HOME}" -d /tmp/database.db -p 8080 --disable-exec
 
-  # zenoh_router:
-  #   image: eclipse/zenoh-bridge-ros2dds:latest
-  #   pull_policy: always
-  #   networks:
-  #     - rosnet
-  #   ports:
-  #     - 7447:7447
-  #     - 8000:8000
-  #   command: "-c /etc/zenoh/zenoh.json5 router"
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
-  #     - ./external/limo_platform/configs/zenoh.json5:/etc/zenoh/zenoh.json5:ro
-  #   links:
-  #     - limo_drivers
-  #   environment:
-  #     - ROS_DISTRO=humble
+  zenoh_router:
+    image: eclipse/zenoh-bridge-ros2dds:latest
+    pull_policy: always
+    networks:
+      - rosnet
+    ports:
+      - 7447:7447
+      - 8000:8000
+    command: "-c /etc/zenoh/zenoh.json5 router"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./external/limo_platform/configs/zenoh.json5:/etc/zenoh/zenoh.json5:ro
+    links:
+      - limo_drivers
+    environment:
+      - ROS_DISTRO=humble
 
   limo_drivers:
     image: lcas.lincoln.ac.uk/lcas/limo_platform:2
@@ -134,3 +134,6 @@ networks:
     driver: bridge
     driver_opts:
       com.docker.network.container_iface_prefix: eth
+
+
+
