@@ -1,0 +1,163 @@
+
+verts:
+  verts:
+  - verts: &vert0
+    - x: -0.13
+      y:  0.213
+    - x: -0.242
+      y:  0.059
+    - x: -0.213
+      y: -0.13
+    - x: -0.059
+      y: -0.242
+    - x:  0.13
+      y: -0.213
+    - x:  0.242
+      y: -0.059
+    - x:  0.213
+      y:  0.13
+    - x:  0.059
+      y:  0.242
+meta:
+  last_updated: 0
+metric_map: unknown
+name: unknown
+pointset: unknown
+transformation:
+  child: topo_map
+  parent: map
+  rotation:
+    w: 1.0
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  translation:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+nodes:
+- meta:
+    map: unknown
+    node: WayPoint1
+    pointset: unknown
+  node:
+    localise_by_topic: ''
+    parent_frame: map
+    name: WayPoint1
+    pose:
+      orientation:
+        w: 0.7897749049165983
+        x: 0.0
+        y: 0.0
+        z: -0.6133967717260812
+      position:
+        x: -3.6473333835601807
+        y: 1.5393750667572021
+        z: 0.0
+    properties:
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.1
+    restrictions_planning: True
+    restrictions_runtime: obstacleFree_1
+    verts: **vert0
+    edges: []
+- meta:
+    map: unknown
+    node: WayPoint2
+    pointset: unknown
+  node:
+    localise_by_topic: ''
+    parent_frame: map
+    name: WayPoint2
+    pose:
+      orientation:
+        w: 0.7897749049165983
+        x: 0.0
+        y: 0.0
+        z: -0.6133967717260812
+      position:
+        x: -2.6245625019073486
+        y: 1.1234779357910156
+        z: 0.0
+    properties:
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.1
+    restrictions_planning: True
+    restrictions_runtime: obstacleFree_1
+    verts: **vert0
+    edges: []
+- meta:
+    map: unknown
+    node: WayPoint3
+    pointset: unknown
+  node:
+    localise_by_topic: ''
+    parent_frame: map
+    name: WayPoint3
+    pose:
+      orientation:
+        w: 0.7897749049165983
+        x: 0.0
+        y: 0.0
+        z: -0.6133967717260812
+      position:
+        x: -1.2842285633087158
+        y: 0.8324856758117676
+        z: 0.0
+    properties:
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.1
+    restrictions_planning: True
+    restrictions_runtime: obstacleFree_1
+    verts: **vert0
+    edges: []
+- meta:
+    map: unknown
+    node: WayPoint4
+    pointset: unknown
+  node:
+    localise_by_topic: ''
+    parent_frame: map
+    name: WayPoint4
+    pose:
+      orientation:
+        w: 0.7897749049165983
+        x: 0.0
+        y: 0.0
+        z: -0.6133967717260812
+      position:
+        x: -0.1189126968383789
+        y: 0.2849963903427124
+        z: 0.0
+    properties:
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.1
+    restrictions_planning: True
+    restrictions_runtime: obstacleFree_1
+    verts: **vert0
+    edges: []
+- meta:
+    map: unknown
+    node: WayPoint5
+    pointset: unknown
+  node:
+    localise_by_topic: ''
+    parent_frame: map
+    name: WayPoint5
+    pose:
+      orientation:
+        w: 0.7897749049165983
+        x: 0.0
+        y: 0.0
+        z: -0.6133967717260812
+      position:
+        x: 1.3559513092041016
+        y: 0.0627133846282959
+        z: 0.0
+    properties:
+      xy_goal_tolerance: 0.3
+      yaw_goal_tolerance: 0.1
+    restrictions_planning: True
+    restrictions_runtime: obstacleFree_1
+    verts: **vert0
+    edges: []

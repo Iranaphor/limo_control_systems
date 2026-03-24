@@ -1,0 +1,22 @@
+---
+session: my_limo
+init_cmd: |
+  #exec /bin/bash
+  cd @TMULE_CONFIG_DIR@ || true
+  set -o pipefail
+
+  export MY_LIMO='/workspaces/limo_ros2/src/custom_packages/my_limo'
+  source $MY_LIMO/tmule/init_cmd.sh
+
+windows:
+
+- name: speech
+  panes:
+  - ros2 run verbaliser audio_collector.py
+  - ros2 run verbaliser openai_chat.py
+  - ros2 run verbaliser speaker.py
+
+- name: limo_bringup
+  panes:
+  - ros2 launch limo_bringup limo_start.launch.py
+  - ros2 run my_limo mqtt.py

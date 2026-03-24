@@ -1,0 +1,33 @@
+---
+session: my_limo
+init_cmd: |
+  #exec /bin/bash
+  cd @TMULE_CONFIG_DIR@ || true
+  set -o pipefail
+
+  export MY_LIMO='/workspaces/limo_ros2/src/custom_packages/my_limo'
+  source $MY_LIMO/tmule/init_cmd.sh
+
+windows:
+
+- name: speech
+  panes:
+  - ros2 run verbaliser speaker.py
+
+- name: limo_bringup
+  panes:
+  - ros2 launch limo_bringup limo_start.launch.py
+  - ros2 run my_limo mqtt.py
+
+- name: limo_control
+  panes:
+  - ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=$JOY_DEV config_filepath:=$JOY_CONFIG
+  - ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+- name: limo_loc
+  panes:
+  - ros2 launch limo_navigation limo_localization.launch.py map:=$COSTMAP_YAML_FILE use_rviz:=true
+
+- name: tmapping
+  panes:
+  - ros2 run my_limo node_mapper.py

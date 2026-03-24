@@ -1,0 +1,23 @@
+# Logitech Extreme 3D Pro
+teleop_twist_joy_node:
+  ros__parameters:
+
+    enable_button: 5  # R1
+    enable_turbo_button: 3  # Y
+
+
+    axis_linear:  # Axes ID for Forward/Back
+      x: 1 # (R) Forwards
+    scale_linear: # Regular Speed
+      x: 0.2
+    scale_linear_turbo: # Turbo Speed
+      x: 1.5
+
+
+    axis_angular:  # Axes ID for Twist
+      yaw: 3 # (L) Sideways
+    scale_angular: # Regular Speed
+      yaw: 0.8
+    scale_angular_turbo: #Turbo Speed
+      yaw: 10.0
+

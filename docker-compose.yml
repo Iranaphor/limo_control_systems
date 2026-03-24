@@ -1,0 +1,136 @@
+services:
+  # ---------------------------------------------------------------------------
+  # limo_platform services (from external/limo_platform/configs/docker-compose.yaml)
+  # ---------------------------------------------------------------------------
+  # filebrowser:
+  #   image: filebrowser/filebrowser
+  #   pull_policy: always
+  #   networks:
+  #     - rosnet
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - ${HOME}:/srv
+  #   command: -r /srv --noauth -b "${HOME}" -d /tmp/database.db -p 8080 --disable-exec
+
+  # zenoh_router:
+  #   image: eclipse/zenoh-bridge-ros2dds:latest
+  #   pull_policy: always
+  #   networks:
+  #     - rosnet
+  #   ports:
+  #     - 7447:7447
+  #     - 8000:8000
+  #   command: "-c /etc/zenoh/zenoh.json5 router"
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - ./external/limo_platform/configs/zenoh.json5:/etc/zenoh/zenoh.json5:ro
+  #   links:
+  #     - limo_drivers
+  #   environment:
+  #     - ROS_DISTRO=humble
+
+  limo_drivers:
+    image: lcas.lincoln.ac.uk/lcas/limo_platform:2
+    pull_policy: always
+    user: "ros"
+    ports:
+      - 5801:5801
+      - 5901:5901
+      - 9999:9999
+    hostname: "${ROBOT_NAME}"
+    privileged: true
+    ipc: host
+    # Original command extended with localization and navigation controller.
+    # limo_start is backgrounded so localization + controller can start after it.
+    command: >-
+      bash -c "
+        source /opt/ros/lcas/install/setup.bash;
+        echo \$$CYCLONEDDS_URI;
+        (code-server --auth none -an ${ROBOT_NAME} --bind-addr 0.0.0.0:9999 --cert &);
+        (ros2 launch astra_camera dabai.launch.py &);
+        (ros2 launch limo_speaker limo_speaker.launch.py &);
+        (ros2 launch limo_bringup limo_start.launch.py &);
+        sleep 5;
+        (ros2 launch limo_navigation limo_localization.launch.py ${MAP_YAML_FILE:+map:=\$MAP_YAML_FILE} use_rviz:=false &);
+        sleep 3;
+        exec ros2 launch limo_navigation limo_controller.launch.py use_rviz:=false
+      "
+    volumes:
+      - /dev:/dev
+      # - ${HOME}:/home/ros/robot_home
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    runtime: nvidia
+    shm_size: '2gb'
+    environment:
+      - DISPLAY=${DISPLAY:-:1}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - MAP_YAML_FILE=${MAP_YAML_FILE:-}
+    networks:
+      - rosnet
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # ---------------------------------------------------------------------------
+  # Research / development container
+  # ---------------------------------------------------------------------------
+  ros2_limo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    pull_policy: never
+    image: limo_control_systems:latest
+    container_name: ros2_limo
+    stdin_open: true
+    tty: true
+    network_mode: host
+    privileged: true  # TEMP: testing joystick access
+
+    group_add:
+      - "107"  # host 'input' group — SDL2 needs read access to /dev/input/event*
+
+    devices:
+      - /dev/input:/dev/input
+
+    volumes:
+      - ./external:/home/ros/ros2_ws/src/external:rw
+      - ./local:/home/ros/ros2_ws/src/local:rw
+      - ./start.sh:/home/ros/start.sh:rw
+      - ./bash_aliases.sh:/home/ros/.bash_aliases.sh:rw
+      - ./tmux.conf:/home/ros/.tmux.conf:rw
+      - colcon_cache:/home/ros/.colcon:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /run/udev:/run/udev:ro
+
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - TMULE_FILE=${TMULE_FILE:-}
+      - SLEEP_TIME=${SLEEP_TIME:-infinity}
+      - MARKER_FILE=/home/ros/.colcon/.first_run_done
+      - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1
+
+    command: ["bash", "-l", "-c", "/home/ros/start.sh"]
+
+volumes:
+  colcon_cache:
+
+networks:
+  rosnet:
+    driver: bridge
+    driver_opts:
+      com.docker.network.container_iface_prefix: eth
