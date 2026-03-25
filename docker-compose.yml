@@ -49,7 +49,6 @@ services:
         source /opt/ros/lcas/install/setup.bash;
         echo \$$CYCLONEDDS_URI;
         (code-server --auth none -an ${ROBOT_NAME} --bind-addr 0.0.0.0:9999 --cert &);
-        (ros2 launch astra_camera dabai.launch.py &);
         (ros2 launch limo_speaker limo_speaker.launch.py &);
         (ros2 launch limo_bringup limo_start.launch.py &);
         sleep 5;
@@ -62,10 +61,11 @@ services:
       - ${HOME}:/home/ros/robot_home
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
     runtime: nvidia
     shm_size: '2gb'
     environment:
-      - DISPLAY=${DISPLAY:-:1}
+      - DISPLAY=${DISPLAY:-:0}
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - MAP_YAML_FILE=${MAP_YAML_FILE:-}
     networks:
@@ -117,6 +117,7 @@ services:
       - TMULE_FILE=${TMULE_FILE:-}
       - SLEEP_TIME=${SLEEP_TIME:-infinity}
       - MARKER_FILE=/home/ros/.colcon/.first_run_done
+      - SDL_JOYSTICK_DEVICE=/dev/input/js0
     command: ["bash", "-l", "-c", "/home/ros/start.sh"]
 
 volumes:

@@ -14,10 +14,10 @@ if [ ! -f "$MARKER_FILE" ]; then
 
     echo -e "\n\n\nRunning ROSDep update and install\n"
     rosdep update
-    rosdep install --from-paths src --ignore-src -r -y
+    rosdep install --from-paths src --ignore-src -r -y --skip-keys "gazebo_ros gazebo_plugins"
 
     echo -e "\n\n\nBuilding Colcon Workspace at /home/ros/ros2_ws\n"
-    colcon build --symlink-install --packages-skip ydlidar_ros2_driver limo_speaker voice_control astra_camera
+    colcon build --symlink-install --packages-skip ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera
 
     echo -e "\n\n\nMarking first run complete\n"
     touch "$MARKER_FILE"
