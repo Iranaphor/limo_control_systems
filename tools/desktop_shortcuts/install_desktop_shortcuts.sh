@@ -81,14 +81,16 @@ EOF
   echo "Created ${file_path}"
 }
 
-create_shortcut "Research Docker On"  "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose up -d'"   "${ICONS_DIR}/research-on.png"  "limo-research-on.desktop"
-create_shortcut "Research Docker Off" "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose down'"     "${ICONS_DIR}/research-off.png"   "limo-research-off.desktop"
+create_shortcut "Research Docker On"    "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose up -d'"                                     "${ICONS_DIR}/research-on.png"     "limo-research-on.desktop"
+create_shortcut "Research Docker Off"   "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose down'"                                   "${ICONS_DIR}/research-off.png"    "limo-research-off.desktop"
+create_shortcut "Remove Research Conky" "bash -lc 'zenity --question --title=\"Remove Research Tools\" --text=\"Are you sure you want to remove all installed Research tools?\n\nThis will remove the Conky widget, desktop shortcuts and helper scripts.\" --ok-label=YES --cancel-label=NO --width=420 && sudo bash \"${PROJECT_DIR}/tools/desktop_shortcuts/uninstall_desktop_shortcuts.sh\"'" "${ICONS_DIR}/research-remove.png" "limo-research-remove.desktop"
 
 # Also install app launcher entries for desktop environments that ignore ~/Desktop.
 APP_DIR="${REAL_HOME}/.local/share/applications"
 mkdir -p "${APP_DIR}"
 cp -f "${TARGET_DIR}/limo-research-on.desktop" "${APP_DIR}/"
 cp -f "${TARGET_DIR}/limo-research-off.desktop" "${APP_DIR}/"
+cp -f "${TARGET_DIR}/limo-research-remove.desktop" "${APP_DIR}/"
 
 # Autostart only the dedicated compose-status Conky instance.
 AUTOSTART_DIR="${REAL_HOME}/.config/autostart"
@@ -112,8 +114,10 @@ if [ -n "${SUDO_USER:-}" ]; then
     "${REAL_HOME}/.config/autostart/limo-compose-conky.desktop" \
     "${TARGET_DIR}/limo-research-on.desktop" \
     "${TARGET_DIR}/limo-research-off.desktop" \
+    "${TARGET_DIR}/limo-research-remove.desktop" \
     "${APP_DIR}/limo-research-on.desktop" \
-    "${APP_DIR}/limo-research-off.desktop" 2>/dev/null || true
+    "${APP_DIR}/limo-research-off.desktop" \
+    "${APP_DIR}/limo-research-remove.desktop" 2>/dev/null || true
   echo "Ownership fixed to ${REAL_USER}"
 fi
 

@@ -26,10 +26,12 @@ rm -f "${REAL_HOME}/.config/autostart/limo-compose-conky.desktop"
 echo "Removing desktop shortcuts..."
 rm -f "${REAL_HOME}/Desktop/limo-research-on.desktop"
 rm -f "${REAL_HOME}/Desktop/limo-research-off.desktop"
+rm -f "${REAL_HOME}/Desktop/limo-research-remove.desktop"
 
 echo "Removing app launcher entries..."
 APP_DIR="${REAL_HOME}/.local/share/applications"
 rm -f "${APP_DIR}/limo-research-on.desktop"
 rm -f "${APP_DIR}/limo-research-off.desktop"
+rm -f "${APP_DIR}/limo-research-remove.desktop"
 
 echo "Uninstall complete."
