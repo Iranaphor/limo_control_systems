@@ -1,0 +1,7 @@
+# Add this line into the TEXT section of your existing conky config.
+# Script is installed by tools/desktop_shortcuts/install_desktop_shortcuts.sh
+# ${execpi 5 ~/scripts/check_compose_services.sh}
+#
+# Optional title lines (if wanted):
+# ${font DejaVu Sans:size=20}${color white}Compose Services
+# ${font DejaVu Sans:size=16}${color white}${execpi 5 ~/scripts/check_compose_services.sh}
