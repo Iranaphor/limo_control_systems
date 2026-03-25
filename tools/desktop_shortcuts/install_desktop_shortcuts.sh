@@ -22,6 +22,7 @@ CONKY_LAUNCHER_DST="${SCRIPTS_DIR}/start_compose_conky.sh"
 CONKY_CONFIG_SRC="${PROJECT_DIR}/tools/conky_compose_status/conkyrc.compose_status"
 CONKY_CONFIG_DIR="${REAL_HOME}/.config/conky"
 CONKY_CONFIG_DST="${CONKY_CONFIG_DIR}/limo-compose.conkyrc"
+ICONS_DIR="${PROJECT_DIR}/tools/desktop_shortcuts/icons"
 
 mkdir -p "${TARGET_DIR}"
 
@@ -42,6 +43,8 @@ fi
 
 mkdir -p "${SCRIPTS_DIR}"
 cp -f "${CONKY_SCRIPT_SRC}" "${CONKY_SCRIPT_DST}"
+# Bake in the absolute project path so the script works from ~/scripts/
+sed -i "s|PROJECT_DIR=\"\${PROJECT_DIR:-.*}\"|PROJECT_DIR=\"${PROJECT_DIR}\"|" "${CONKY_SCRIPT_DST}"
 chmod +x "${CONKY_SCRIPT_DST}"
 echo "Installed ${CONKY_SCRIPT_DST}"
 
@@ -56,7 +59,9 @@ echo "Installed ${CONKY_CONFIG_DST}"
 create_shortcut() {
   local name="$1"
   local exec_line="$2"
-  local file_path="${TARGET_DIR}/${name}.desktop"
+  local icon="$3"
+  local file_name="$4"
+  local file_path="${TARGET_DIR}/${file_name}"
 
   cat > "${file_path}" <<EOF
 [Desktop Entry]
@@ -64,6 +69,7 @@ Version=1.0
 Type=Application
 Name=${name}
 Exec=${exec_line}
+Icon=${icon}
 Terminal=true
 Categories=Utility;
 EOF
@@ -72,18 +78,14 @@ EOF
   echo "Created ${file_path}"
 }
 
-create_shortcut "Limo Compose Up" "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose up -d'"
-create_shortcut "Limo Compose Down" "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose down'"
-create_shortcut "Limo Compose Logs" "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose logs -f --tail=200'"
-create_shortcut "Limo Compose Conky Restart" "bash -lc '${CONKY_LAUNCHER_DST}'"
+create_shortcut "Research Docker On"  "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose up -d'"   "${ICONS_DIR}/research-on.png"  "limo-research-on.desktop"
+create_shortcut "Research Docker Off" "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose down'"     "${ICONS_DIR}/research-off.png"   "limo-research-off.desktop"
 
 # Also install app launcher entries for desktop environments that ignore ~/Desktop.
 APP_DIR="${REAL_HOME}/.local/share/applications"
 mkdir -p "${APP_DIR}"
-cp -f "${TARGET_DIR}/Limo Compose Up.desktop" "${APP_DIR}/"
-cp -f "${TARGET_DIR}/Limo Compose Down.desktop" "${APP_DIR}/"
-cp -f "${TARGET_DIR}/Limo Compose Logs.desktop" "${APP_DIR}/"
-cp -f "${TARGET_DIR}/Limo Compose Conky Restart.desktop" "${APP_DIR}/"
+cp -f "${TARGET_DIR}/limo-research-on.desktop" "${APP_DIR}/"
+cp -f "${TARGET_DIR}/limo-research-off.desktop" "${APP_DIR}/"
 
 # Autostart only the dedicated compose-status Conky instance.
 AUTOSTART_DIR="${REAL_HOME}/.config/autostart"
@@ -105,14 +107,10 @@ if [ -n "${SUDO_USER:-}" ]; then
     "${SCRIPTS_DIR}" \
     "${REAL_HOME}/.config/conky" \
     "${REAL_HOME}/.config/autostart/limo-compose-conky.desktop" \
-    "${TARGET_DIR}/Limo Compose Up.desktop" \
-    "${TARGET_DIR}/Limo Compose Down.desktop" \
-    "${TARGET_DIR}/Limo Compose Logs.desktop" \
-    "${TARGET_DIR}/Limo Compose Conky Restart.desktop" \
-    "${APP_DIR}/Limo Compose Up.desktop" \
-    "${APP_DIR}/Limo Compose Down.desktop" \
-    "${APP_DIR}/Limo Compose Logs.desktop" \
-    "${APP_DIR}/Limo Compose Conky Restart.desktop" 2>/dev/null || true
+    "${TARGET_DIR}/limo-research-on.desktop" \
+    "${TARGET_DIR}/limo-research-off.desktop" \
+    "${APP_DIR}/limo-research-on.desktop" \
+    "${APP_DIR}/limo-research-off.desktop" 2>/dev/null || true
   echo "Ownership fixed to ${REAL_USER}"
 fi
 
