@@ -22,12 +22,17 @@ if [ -z "${services}" ]; then
   exit 0
 fi
 
+# First pass: collect names and statuses
+declare -a _names=()
+declare -a _labels=()
+
 while IFS= read -r svc; do
   [ -z "${svc}" ] && continue
 
   cid="$(docker compose -f "${COMPOSE_FILE}" ps -q "${svc}" 2>/dev/null || true)"
   if [ -z "${cid}" ]; then
-    printf "%-14s : DOWN\n" "${svc}"
+    _names+=("${svc}")
+    _labels+=("DOWN")
     continue
   fi
 
@@ -35,26 +40,26 @@ while IFS= read -r svc; do
   health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "${cid}" 2>/dev/null || true)"
 
   case "${state}" in
-    running)
-      label="RUNNING"
-      ;;
-    exited|dead)
-      label="ERROR"
-      ;;
-    created|restarting)
-      label="STARTING"
-      ;;
-    paused)
-      label="PAUSED"
-      ;;
-    *)
-      label="${state^^}"
-      ;;
+    running)           lbl="RUNNING" ;;
+    exited|dead)       lbl="ERROR" ;;
+    created|restarting) lbl="STARTING" ;;
+    paused)            lbl="PAUSED" ;;
+    *)                 lbl="${state^^}" ;;
   esac
 
-  if [ -n "${health}" ]; then
-    printf "%-14s : %s (%s)\n" "${svc}" "${label}" "${health}"
-  else
-    printf "%-14s : %s\n" "${svc}" "${label}"
-  fi
+  [ -n "${health}" ] && lbl="${lbl} (${health})"
+
+  _names+=("${svc}")
+  _labels+=("${lbl}")
 done <<< "${services}"
+
+# Find longest service name for consistent column alignment
+max_len=0
+for n in "${_names[@]}"; do
+  [ ${#n} -gt ${max_len} ] && max_len=${#n}
+done
+
+# Second pass: print as aligned table with vertical pipe separator
+for i in "${!_names[@]}"; do
+  printf "%-${max_len}s  |  %s\n" "${_names[$i]}" "${_labels[$i]}"
+done
