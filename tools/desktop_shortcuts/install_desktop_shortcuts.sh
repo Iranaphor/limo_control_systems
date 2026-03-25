@@ -3,14 +3,24 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-TARGET_DIR="${HOME}/Desktop"
-SCRIPTS_DIR="${HOME}/scripts"
+
+# When run via sudo, install into the real user's home rather than root's.
+if [ -n "${SUDO_USER:-}" ]; then
+  REAL_USER="${SUDO_USER}"
+  REAL_HOME="$(getent passwd "${SUDO_USER}" | cut -d: -f6)"
+else
+  REAL_USER="$(whoami)"
+  REAL_HOME="${HOME}"
+fi
+
+TARGET_DIR="${REAL_HOME}/Desktop"
+SCRIPTS_DIR="${REAL_HOME}/scripts"
 CONKY_SCRIPT_SRC="${PROJECT_DIR}/tools/conky_compose_status/check_compose_services.sh"
 CONKY_SCRIPT_DST="${SCRIPTS_DIR}/check_compose_services.sh"
 CONKY_LAUNCHER_SRC="${PROJECT_DIR}/tools/conky_compose_status/start_compose_conky.sh"
 CONKY_LAUNCHER_DST="${SCRIPTS_DIR}/start_compose_conky.sh"
 CONKY_CONFIG_SRC="${PROJECT_DIR}/tools/conky_compose_status/conkyrc.compose_status"
-CONKY_CONFIG_DIR="${HOME}/.config/conky"
+CONKY_CONFIG_DIR="${REAL_HOME}/.config/conky"
 CONKY_CONFIG_DST="${CONKY_CONFIG_DIR}/limo-compose.conkyrc"
 
 mkdir -p "${TARGET_DIR}"
@@ -68,7 +78,7 @@ create_shortcut "Limo Compose Logs" "bash -lc 'cd \"${PROJECT_DIR}\" && docker c
 create_shortcut "Limo Compose Conky Restart" "bash -lc '${CONKY_LAUNCHER_DST}'"
 
 # Also install app launcher entries for desktop environments that ignore ~/Desktop.
-APP_DIR="${HOME}/.local/share/applications"
+APP_DIR="${REAL_HOME}/.local/share/applications"
 mkdir -p "${APP_DIR}"
 cp -f "${TARGET_DIR}/Limo Compose Up.desktop" "${APP_DIR}/"
 cp -f "${TARGET_DIR}/Limo Compose Down.desktop" "${APP_DIR}/"
@@ -76,7 +86,7 @@ cp -f "${TARGET_DIR}/Limo Compose Logs.desktop" "${APP_DIR}/"
 cp -f "${TARGET_DIR}/Limo Compose Conky Restart.desktop" "${APP_DIR}/"
 
 # Autostart only the dedicated compose-status Conky instance.
-AUTOSTART_DIR="${HOME}/.config/autostart"
+AUTOSTART_DIR="${REAL_HOME}/.config/autostart"
 mkdir -p "${AUTOSTART_DIR}"
 cat > "${AUTOSTART_DIR}/limo-compose-conky.desktop" <<EOF
 [Desktop Entry]
@@ -89,6 +99,30 @@ X-GNOME-Autostart-enabled=true
 Categories=Utility;
 EOF
 
-"${CONKY_LAUNCHER_DST}" || true
+# Fix ownership of all installed files back to the real user when run via sudo.
+if [ -n "${SUDO_USER:-}" ]; then
+  chown -R "${REAL_USER}:${REAL_USER}" \
+    "${SCRIPTS_DIR}" \
+    "${REAL_HOME}/.config/conky" \
+    "${REAL_HOME}/.config/autostart/limo-compose-conky.desktop" \
+    "${TARGET_DIR}/Limo Compose Up.desktop" \
+    "${TARGET_DIR}/Limo Compose Down.desktop" \
+    "${TARGET_DIR}/Limo Compose Logs.desktop" \
+    "${TARGET_DIR}/Limo Compose Conky Restart.desktop" \
+    "${APP_DIR}/Limo Compose Up.desktop" \
+    "${APP_DIR}/Limo Compose Down.desktop" \
+    "${APP_DIR}/Limo Compose Logs.desktop" \
+    "${APP_DIR}/Limo Compose Conky Restart.desktop" 2>/dev/null || true
+  echo "Ownership fixed to ${REAL_USER}"
+fi
+
+# Launch conky as the real user so DISPLAY resolves correctly.
+if command -v conky >/dev/null 2>&1; then
+  if [ -n "${SUDO_USER:-}" ]; then
+    sudo -u "${REAL_USER}" "${CONKY_LAUNCHER_DST}" || true
+  else
+    "${CONKY_LAUNCHER_DST}" || true
+  fi
+fi
 
 echo "Desktop shortcuts installed."

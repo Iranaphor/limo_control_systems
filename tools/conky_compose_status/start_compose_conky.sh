@@ -13,6 +13,12 @@ if [ ! -f "${CONKY_CONFIG}" ]; then
   exit 1
 fi
 
+# Resolve DISPLAY: use current env var, or default to :0.
+if [ -z "${DISPLAY:-}" ]; then
+  DISPLAY=:0
+fi
+export DISPLAY
+
 # Restart only the dedicated compose-status Conky instance, not the user's existing one.
 pkill -f "conky -c ${CONKY_CONFIG}" >/dev/null 2>&1 || true
 conky -c "${CONKY_CONFIG}" -d
