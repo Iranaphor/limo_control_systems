@@ -22,6 +22,9 @@ if [ -z "${services}" ]; then
   exit 0
 fi
 
+# Sort services alphabetically before processing
+services="$(echo "${services}" | sort)"
+
 # First pass: collect names and statuses
 declare -a _names=()
 declare -a _labels=()

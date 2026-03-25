@@ -31,5 +31,5 @@ conky.config = {
 
 conky.text = [[
 ${font DejaVu Sans:size=26}${color white}Limo Compose Services
-${font DejaVu Sans:size=18}${color white}${execpi 5 ~/scripts/check_compose_services.sh}
+${font DejaVu Sans Mono:size=18}${color white}${execpi 5 ~/scripts/check_compose_services.sh}
 ]];
