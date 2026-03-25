@@ -20,9 +20,9 @@ conky.config = {
     border_outer_margin = 0,
     minimum_width = 100,
     maximum_width = 600,
-    gap_x = 0,
+    gap_x = 40,
     gap_y = 70,
-    alignment = 'top_middle',
+    alignment = 'bottom_left',
     no_buffers = true,
     uppercase = false,
     override_utf8_locale = true,
@@ -30,6 +30,6 @@ conky.config = {
 };
 
 conky.text = [[
-${font DejaVu Sans:size=26}${color white}Limo Compose Services
+${font DejaVu Sans:size=26}${color white}Research Services
 ${font DejaVu Sans Mono:size=18}${color white}${execpi 5 ~/scripts/check_compose_services.sh}
 ]];
