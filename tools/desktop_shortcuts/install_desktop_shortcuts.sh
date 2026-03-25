@@ -81,9 +81,9 @@ EOF
   echo "Created ${file_path}"
 }
 
-create_shortcut "Research Docker On"    "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose up -d'"                                     "${ICONS_DIR}/research-on.png"     "limo-research-on.desktop"
-create_shortcut "Research Docker Off"   "bash -lc 'cd \"${PROJECT_DIR}\" && docker compose down'"                                   "${ICONS_DIR}/research-off.png"    "limo-research-off.desktop"
-create_shortcut "Remove Research Conky" "bash -lc 'zenity --question --title=\"Remove Research Tools\" --text=\"Are you sure you want to remove all installed Research tools?\n\nThis will remove the Conky widget, desktop shortcuts and helper scripts.\" --ok-label=YES --cancel-label=NO --width=420 && sudo bash \"${PROJECT_DIR}/tools/desktop_shortcuts/uninstall_desktop_shortcuts.sh\"'" "${ICONS_DIR}/research-remove.png" "limo-research-remove.desktop"
+create_shortcut "Research Docker On"    "bash -lc 'zenity --question --title=\"Start Research Services\" --text=\"Start all Research Docker services?\" --ok-label=YES --cancel-label=NO --width=360 && cd \"${PROJECT_DIR}\" && docker compose up -d'"       "${ICONS_DIR}/research-on.png"     "limo-research-on.desktop"
+create_shortcut "Research Docker Off"   "bash -lc 'zenity --question --title=\"Stop Research Services\" --text=\"Stop all Research Docker services?\" --ok-label=YES --cancel-label=NO --width=360 && cd \"${PROJECT_DIR}\" && docker compose down'"         "${ICONS_DIR}/research-off.png"    "limo-research-off.desktop"
+create_shortcut "Remove Research Tools" "bash -lc 'zenity --question --title=\"Remove Research Tools\" --text=\"Are you sure you want to remove all installed Research tools?\n\nThis will remove the Conky widget, desktop shortcuts and helper scripts.\" --ok-label=YES --cancel-label=NO --width=420 && bash \"${PROJECT_DIR}/tools/desktop_shortcuts/uninstall_desktop_shortcuts.sh\"'" "${ICONS_DIR}/research-remove.png" "limo-research-remove.desktop"
 
 # Also install app launcher entries for desktop environments that ignore ~/Desktop.
 APP_DIR="${REAL_HOME}/.local/share/applications"
