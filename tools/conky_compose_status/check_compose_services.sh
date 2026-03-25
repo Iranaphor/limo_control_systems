@@ -32,27 +32,27 @@ declare -a _labels=()
 while IFS= read -r svc; do
   [ -z "${svc}" ] && continue
 
+  # Pretty-print: underscores to spaces, title case each word
+  display_name="$(echo "${svc}" | tr '_' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2)); print}')"
+
   cid="$(docker compose -f "${COMPOSE_FILE}" ps -q "${svc}" 2>/dev/null || true)"
   if [ -z "${cid}" ]; then
-    _names+=("${svc}")
+    _names+=("${display_name}")
     _labels+=("DOWN")
     continue
   fi
 
   state="$(docker inspect -f '{{.State.Status}}' "${cid}" 2>/dev/null || echo "unknown")"
-  health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{end}}' "${cid}" 2>/dev/null || true)"
 
   case "${state}" in
-    running)           lbl="RUNNING" ;;
-    exited|dead)       lbl="ERROR" ;;
+    running)            lbl="RUNNING" ;;
+    exited|dead)        lbl="ERROR" ;;
     created|restarting) lbl="STARTING" ;;
-    paused)            lbl="PAUSED" ;;
-    *)                 lbl="${state^^}" ;;
+    paused)             lbl="PAUSED" ;;
+    *)                  lbl="${state^^}" ;;
   esac
 
-  [ -n "${health}" ] && lbl="${lbl} (${health})"
-
-  _names+=("${svc}")
+  _names+=("${display_name}")
   _labels+=("${lbl}")
 done <<< "${services}"
 

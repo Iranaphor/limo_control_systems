@@ -42,9 +42,12 @@ if [ ! -f "${CONKY_CONFIG_SRC}" ]; then
 fi
 
 mkdir -p "${SCRIPTS_DIR}"
-cp -f "${CONKY_SCRIPT_SRC}" "${CONKY_SCRIPT_DST}"
-# Bake in the absolute project path so the script works from ~/scripts/
-sed -i "s|PROJECT_DIR=\"\${PROJECT_DIR:-.*}\"|PROJECT_DIR=\"${PROJECT_DIR}\"|" "${CONKY_SCRIPT_DST}"
+# Write a wrapper that bakes in PROJECT_DIR then calls the real source script.
+cat > "${CONKY_SCRIPT_DST}" <<WRAPPER
+#!/usr/bin/env bash
+export PROJECT_DIR="${PROJECT_DIR}"
+exec "${CONKY_SCRIPT_SRC}" "\$@"
+WRAPPER
 chmod +x "${CONKY_SCRIPT_DST}"
 echo "Installed ${CONKY_SCRIPT_DST}"
 
@@ -70,7 +73,7 @@ Type=Application
 Name=${name}
 Exec=${exec_line}
 Icon=${icon}
-Terminal=true
+Terminal=false
 Categories=Utility;
 EOF
 
