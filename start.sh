@@ -17,7 +17,7 @@ if [ ! -f "$MARKER_FILE" ]; then
     rosdep install --from-paths src --ignore-src -r -y --skip-keys "gazebo_ros gazebo_plugins"
 
     echo -e "\n\n\nBuilding Colcon Workspace at /home/ros/ros2_ws\n"
-    colcon build --symlink-install --packages-skip ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera
+    colcon build --symlink-install --packages-skip ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera astra_camera_msgs limo_msgs
 
     echo -e "\n\n\nMarking first run complete\n"
     touch "$MARKER_FILE"

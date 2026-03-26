@@ -53,33 +53,17 @@ SLEEP_TIME=infinity
 
 ## Quick start
 
-From repo root:
+Run the installer once from the repo root:
 
 ```bash
-docker compose up -d
+sudo bash tools/desktop_shortcuts/install_desktop_shortcuts.sh
 ```
 
-To stop everything:
+This sets up the Conky status widget and places shortcuts on the desktop. From then on use the desktop icons:
 
-```bash
-docker compose down
-```
-
-To follow logs:
-
-```bash
-docker compose logs -f --tail=200
-```
-
-## Optional UI helpers
-
-Install desktop shortcuts and a separate compose-status Conky widget:
-
-```bash
-bash tools/desktop_shortcuts/install_desktop_shortcuts.sh
-```
-
-This does not modify your existing Conky config.
+- **Research Docker On** — start all services
+- **Research Docker Off** — stop all services
+- **Remove Research Tools** — uninstall the shortcuts and Conky widget (with confirmation prompt)
 
 ## Notes
 
