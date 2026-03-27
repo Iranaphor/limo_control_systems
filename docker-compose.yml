@@ -97,8 +97,6 @@ services:
     tty: true
     network_mode: host
     privileged: true
-#    group_add:
-#      - "107"  # host 'input' group — SDL2 needs read access to /dev/input/event*
     devices:
       - /dev/input:/dev/input
     volumes:
@@ -107,7 +105,6 @@ services:
       - ./start.sh:/home/ros/start.sh:rw
       - ./bash_aliases.sh:/home/ros/.bash_aliases.sh:rw
       - ./tmux.conf:/home/ros/.tmux.conf:rw
-#      - colcon_cache:/home/ros/.colcon:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /run/udev:/run/udev:ro
     environment:
