@@ -10,10 +10,12 @@ cd "$HOME/ros2_ws"
 
 if [ ! -f "$MARKER_FILE" ]; then
     echo -e "\n\n\nRunning apt update\n"
-    sudo apt-get update
+    sudo apt-get update -q
 
-    echo -e "\n\n\nRunning ROSDep update and install\n"
+    echo -e "\n\n\nRunning ROSDep Update\n"
     rosdep update
+
+    echo -e "\n\n\nRunning ROSDep Install\n"
     rosdep install --from-paths src --ignore-src -r -y --skip-keys "gazebo_ros gazebo_plugins"
 
     echo -e "\n\n\nBuilding Colcon Workspace at /home/ros/ros2_ws\n"

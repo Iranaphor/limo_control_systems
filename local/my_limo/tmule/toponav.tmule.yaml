@@ -25,7 +25,7 @@ windows:
 - name: limo_control
   panes:
   - ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=$JOY_DEV_ID config_filepath:=$JOY_CONFIG
-  - sleep 5 ; ros2 topic echo /joy
+#  - sleep 5 ; ros2 topic echo /joy
   - ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 # - name: map_loc
