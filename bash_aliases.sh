@@ -8,6 +8,8 @@ if [ -f "$HOME/ros2_ws/install/setup.bash" ]; then
   source "$HOME/ros2_ws/install/setup.bash"
 fi
 
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
 export ROS_WS="$HOME/ros2_ws"
 
 export RCUTILS_CONSOLE_OUTPUT_FORMAT="{severity}: {message}"

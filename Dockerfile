@@ -9,6 +9,7 @@ ENV WS=/home/${USERNAME}/ros2_ws
 ENV ROS_WS=${WS}
 ENV ROS_DISTRO=humble
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 SHELL ["/bin/bash", "-c"]
 
@@ -28,6 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-rosdep \
     python3-rosdep-modules \
     tmux \
+    ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-cyclonedds \
+    ros-humble-rqt-tf-tree \
     && curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
       | gpg --dearmor -o /usr/share/keyrings/ros-archive-keyring.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2-testing/ubuntu $(lsb_release -cs) main" \
@@ -90,11 +94,7 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
            voice_control \
            astra_camera
 
-# Shell niceties
-RUN sed -i 's/^#\(force_color_prompt\)/\1/' /home/${USERNAME}/.bashrc \
-    && grep -qxF 'source ~/.bash_aliases.sh' /home/${USERNAME}/.bashrc || echo 'source ~/.bash_aliases.sh' >> /home/${USERNAME}/.bashrc \
-    && grep -qxF "source /opt/ros/${ROS_DISTRO}/setup.bash" /home/${USERNAME}/.bashrc || echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /home/${USERNAME}/.bashrc \
-    && grep -qxF "source ${ROS_WS}/install/setup.bash" /home/${USERNAME}/.bashrc || echo "source ${ROS_WS}/install/setup.bash" >> /home/${USERNAME}/.bashrc
-
+# Shell extras
+RUN sed -i 's/^#\(force_color_prompt\)/\1/' /home/${USERNAME}/.bashrc
 
 CMD ["/bin/bash"]
