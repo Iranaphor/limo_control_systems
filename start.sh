@@ -22,6 +22,7 @@ if [ ! -f "$MARKER_FILE" ]; then
     rm -r $HOME/ros2_ws/build $HOME/ros2_ws/install $HOME/ros2_ws/log
 
     echo -e "\n\n\nBuilding Colcon Workspace at /home/ros/ros2_ws\n"
+    #colcon build --symlink-install --packages-skip topological_navigation topological_utils topological_navigation_msgs ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera astra_camera_msgs
     colcon build --symlink-install --packages-skip ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera astra_camera_msgs
 
     echo -e "\n\n\nMarking first run complete\n"

@@ -18,7 +18,7 @@ export RCUTILS_COLORIZED_OUTPUT=1
 alias nano='nano -BEPOUWx -T 4'
 alias t='tmux'
 
-export JOY_CONFIG=/home/ros/ros2_ws/src/local/my_limo/config/logitech.yaml 
+export JOY_CONFIG=/home/ros/ros2_ws/src/local/my_limo/config/logitech.yaml
 export JOY_DEV='/dev/input/js0'
 export JOY_DEV_ID=0
 

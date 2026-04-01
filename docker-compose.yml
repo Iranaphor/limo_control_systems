@@ -51,8 +51,8 @@ services:
         (code-server --auth none -an ${ROBOT_NAME} --bind-addr 0.0.0.0:9999 --cert &);
         (ros2 launch limo_bringup limo_start.launch.py &);
         sleep 5;
-        (ros2 launch limo_navigation limo_localization.launch.py ${MAP_YAML_FILE:+map:=\$MAP_YAML_FILE} use_rviz:=true &);
-        sleep 3;
+        #(ros2 launch limo_navigation limo_localization.launch.py ${MAP_YAML_FILE:+map:=\$MAP_YAML_FILE} use_rviz:=true &);
+        #sleep 3;
         exec ros2 launch limo_navigation limo_controller.launch.py use_rviz:=true
       "
     volumes:
