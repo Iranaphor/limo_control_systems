@@ -27,7 +27,7 @@ windows:
   panes:
   - ros2 launch teleop_twist_joy teleop-launch.py joy_dev:=$JOY_DEV_ID config_filepath:=$JOY_CONFIG
 #  - sleep 5 ; ros2 topic echo /joy
-  - ros2 run teleop_twist_keyboard teleop_twist_keyboard
+#  - ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 - name: environment
   panes:
@@ -38,7 +38,7 @@ windows:
 - name: map_loc
   panes:
   - ros2 launch my_limo localisation.launch.py
-  - ros2 run rqt_tf_tree rqt_tf_tree
+  - sleep 30 ; ros2 run rqt_tf_tree rqt_tf_tree
 
 - name: map_nav
   panes:

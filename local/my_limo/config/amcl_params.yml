@@ -1,49 +1,136 @@
 amcl:
   ros__parameters:
-    use_sim_time: False
-    alpha1: 0.02
-    alpha2: 0.02
-    alpha3: 0.02
-    alpha4: 0.02
-    alpha5: 0.02
-    base_frame_id: "base_link"
-    beam_skip_distance: 0.5
-    beam_skip_error_threshold: 0.9
-    beam_skip_threshold: 0.3
-    do_beamskip: false
-    global_frame_id: "map"
-    lambda_short: 0.1
-    laser_likelihood_max_dist: 2.0
-    laser_max_range: 10.0
-    laser_min_range: -1.0
+
+    # ========================
+    # GENERAL SETTINGS
+    # ========================
+
+    use_sim_time: False   # Use real system clock instead of simulated ROS time
+
+    base_frame_id: "base_link"   # Robot body frame
+    odom_frame_id: "odom"        # Odometry frame produced by wheel odometry / state estimator
+    global_frame_id: "map"       # Global fixed frame for localisation result
+
+    tf_broadcast: true           # AMCL publishes map -> odom transform
+    transform_tolerance: 0.2     # Allowed TF timestamp tolerance (helps avoid timing issues)
+
+
+    # ========================
+    # MOTION MODEL (ODOMETRY UNCERTAINTY)
+    # ========================
+    # These parameters describe how uncertain the robot motion is.
+    # Higher values = particles spread more during movement.
+    #
+    # Skid steer robots often experience slip during turning,
+    # so moderate uncertainty is usually appropriate.
+
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+
+    alpha1: 0.05  # rotational error from rotation
+    alpha2: 0.05  # rotational error from translation
+    alpha3: 0.03  # translational error from translation
+    alpha4: 0.02  # translational error from rotation
+    alpha5: 0.2   # used only for omni drive models (ignored here)
+
+    # Rotating on the spot 10 full rotations:
+    # moved left 9.8cm
+    # moved forward 7.5cm
+    # on the spot rotation is good so we have alpha1 low
+    # odom still points forwards after going forward and backward so alpha2 small
+    # going forward and backward puts robot back where it started so alpha3 is small
+
+
+
+    # ========================
+    # SENSOR MODEL (LASER MATCHING)
+    # ========================
+    # Controls how strongly laser scans influence particle weighting.
+    # Lower sigma_hit + smaller likelihood distance = tighter clustering
+    # but can be less tolerant of noisy scans.
+
     laser_model_type: "likelihood_field"
-    max_beams: 60
-    max_particles: 2000
-    min_particles: 500
-    odom_frame_id: "odom"
-    pf_err: 0.05
-    pf_z: 0.99
+
+    laser_max_range: -1.0   # use sensor-reported max range
+    laser_min_range: -1.0   # use sensor-reported min range
+
+    max_beams: 120          # number of laser beams used per update
+                            # higher = better localisation but more CPU
+
+    sigma_hit: 0.12         # expected laser measurement noise (lower = sharper weighting)
+    laser_likelihood_max_dist: 0.06   # distance at which obstacles influence likelihood field
+
+    z_hit: 0.9    # weight for correct laser matches
+    z_rand: 0.1   # probability of random measurements/noise
+
+    do_beamskip: false   # disables ignoring inconsistent beams during tuning
+
+
+    # ========================
+    # PARTICLE FILTER SIZE
+    # ========================
+    # Controls how many hypotheses AMCL maintains.
+    # Lower values tighten visual spread and reduce CPU usage.
+    #
+    # Defaults are 500–2000, which can appear visually broad.
+
+    min_particles: 20
+    max_particles: 120
+
+    pf_err: 0.05   # allowed error in particle distribution
+    pf_z: 0.99     # confidence level for adaptive particle sizing
+
+    resample_interval: 1   # resample every update step
+
+
+    # ========================
+    # UPDATE FREQUENCY
+    # ========================
+    # Minimum movement before AMCL updates.
+    # Reduced thresholds help small slow robots refine pose more frequently.
+
+    update_min_d: 0.05   # minimum translation (m) before update
+    update_min_a: 0.05   # minimum rotation (rad) before update
+
+
+    # ========================
+    # RECOVERY BEHAVIOUR
+    # ========================
+    # Adds random particles when localisation quality drops.
+    # Disabled here to prevent persistent particle spread while tuning.
+
     recovery_alpha_fast: 0.0
     recovery_alpha_slow: 0.0
-    resample_interval: 1
-    robot_model_type: "nav2_amcl::DifferentialMotionModel"
-    save_pose_rate: 0.5
-    sigma_hit: 0.2
-    tf_broadcast: true
-    transform_tolerance: 0.2
-    update_min_a: 0.2
-    update_min_d: 0.25
-    z_hit: 0.5
-    z_max: 0.05
-    z_rand: 0.5
-    z_short: 0.05
+
+
+    # ========================
+    # MAP AND SENSOR INPUTS
+    # ========================
+
     scan_topic: scan
+
+    # using SLAM-generated occupancy grid containing real obstacles
     map_topic: keepout_mask
+
+
+    # ========================
+    # INITIAL POSE
+    # ========================
+    # Initial estimate of robot pose.
+    # Can also be set interactively in RViz.
+
     set_initial_pose: true
     always_reset_initial_pose: false
     first_map_only: false
+
     initial_pose:
-      x: 0.0
-      y: 0.0
+      x: 2.55
+      y: -0.26
       z: 0.0
-      yaw: 0.0
+      yaw: 3.06
+
+
+    # ========================
+    # MISC
+    # ========================
+
+    save_pose_rate: 0.5   # how often pose is saved internally
