@@ -13,23 +13,23 @@ services:
       - ${HOME}:/srv
     command: -r /srv --noauth -b "${HOME}" -d /tmp/database.db -p 8080 --disable-exec
 
-  zenoh_router:
-    image: eclipse/zenoh-bridge-ros2dds:latest
-    pull_policy: always
-    networks:
-      - rosnet
-    ports:
-      - 7447:7447
-      - 8000:8000
-    command: "-c /etc/zenoh/zenoh.json5 router"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - ./external/limo_platform/configs/zenoh.json5:/etc/zenoh/zenoh.json5:ro
-    links:
-      - limo_drivers
-    environment:
-      - ROS_DISTRO=humble
+#  zenoh_router:
+#    image: eclipse/zenoh-bridge-ros2dds:latest
+#    pull_policy: always
+#    networks:
+#      - rosnet
+#    ports:
+#      - 7447:7447
+#      - 8000:8000
+#    command: "-c /etc/zenoh/zenoh.json5 router"
+#    volumes:
+#      - /etc/localtime:/etc/localtime:ro
+#      - /etc/timezone:/etc/timezone:ro
+#      - ./external/limo_platform/configs/zenoh.json5:/etc/zenoh/zenoh.json5:ro
+#    links:
+#      - limo_drivers
+#    environment:
+#      - ROS_DISTRO=humble
 
   limo_drivers:
     image: lcas.lincoln.ac.uk/lcas/limo_platform:2
@@ -49,11 +49,7 @@ services:
         source /opt/ros/lcas/install/setup.bash;
         echo \$$CYCLONEDDS_URI;
         (code-server --auth none -an ${ROBOT_NAME} --bind-addr 0.0.0.0:9999 --cert &);
-        (ros2 launch limo_bringup limo_start.launch.py &);
-        sleep 5;
-        #(ros2 launch limo_navigation limo_localization.launch.py ${MAP_YAML_FILE:+map:=\$MAP_YAML_FILE} use_rviz:=true &);
-        #sleep 3;
-        exec ros2 launch limo_navigation limo_controller.launch.py use_rviz:=true
+        ros2 launch limo_bringup limo_start.launch.py
       "
     volumes:
       - /dev:/dev
