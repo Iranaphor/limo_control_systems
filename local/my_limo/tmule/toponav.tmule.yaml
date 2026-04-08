@@ -33,12 +33,13 @@ windows:
   panes:
   - ros2 launch environment_common environment.launch.py
   - ros2 topic echo /map nav_msgs/msg/OccupancyGrid --once --no-arr --qos-reliability reliable --qos-durability transient_local
+  - sleep 30 ; ros2 run rqt_tf_tree rqt_tf_tree
 #  check: "ros2 topic echo /map nav_msgs/msg/OccupancyGrid --once --no-arr --qos-reliability reliable --qos-durability transient_local"
 
 - name: map_loc
   panes:
   - ros2 launch my_limo localisation.launch.py
-  - sleep 30 ; ros2 run rqt_tf_tree rqt_tf_tree
+  - nano ../config/amcl_params.yml
 
 - name: map_nav
   panes:

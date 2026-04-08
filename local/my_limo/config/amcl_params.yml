@@ -26,19 +26,11 @@ amcl:
 
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
 
-    alpha1: 0.05  # rotational error from rotation
-    alpha2: 0.05  # rotational error from translation
+    alpha1: 0.08  # rotational error from rotation
+    alpha2: 0.01  # rotational error from translation
     alpha3: 0.03  # translational error from translation
-    alpha4: 0.02  # translational error from rotation
+    alpha4: 0.05  # translational error from rotation
     alpha5: 0.2   # used only for omni drive models (ignored here)
-
-    # Rotating on the spot 10 full rotations:
-    # moved left 9.8cm
-    # moved forward 7.5cm
-    # on the spot rotation is good so we have alpha1 low
-    # odom still points forwards after going forward and backward so alpha2 small
-    # going forward and backward puts robot back where it started so alpha3 is small
-
 
 
     # ========================
@@ -53,11 +45,11 @@ amcl:
     laser_max_range: -1.0   # use sensor-reported max range
     laser_min_range: -1.0   # use sensor-reported min range
 
-    max_beams: 120          # number of laser beams used per update
+    max_beams: 90          # number of laser beams used per update
                             # higher = better localisation but more CPU
 
-    sigma_hit: 0.12         # expected laser measurement noise (lower = sharper weighting)
-    laser_likelihood_max_dist: 0.06   # distance at which obstacles influence likelihood field
+    sigma_hit: 0.10         # expected laser measurement noise (lower = sharper weighting)
+    laser_likelihood_max_dist: 0.20   # distance at which obstacles influence likelihood field
 
     z_hit: 0.9    # weight for correct laser matches
     z_rand: 0.1   # probability of random measurements/noise
@@ -73,8 +65,8 @@ amcl:
     #
     # Defaults are 500–2000, which can appear visually broad.
 
-    min_particles: 20
-    max_particles: 120
+    min_particles: 100
+    max_particles: 400
 
     pf_err: 0.05   # allowed error in particle distribution
     pf_z: 0.99     # confidence level for adaptive particle sizing
@@ -88,8 +80,8 @@ amcl:
     # Minimum movement before AMCL updates.
     # Reduced thresholds help small slow robots refine pose more frequently.
 
-    update_min_d: 0.05   # minimum translation (m) before update
-    update_min_a: 0.05   # minimum rotation (rad) before update
+    update_min_d: 0.02   # minimum translation (m) before update
+    update_min_a: 0.40   # minimum rotation (rad) before update
 
 
     # ========================
