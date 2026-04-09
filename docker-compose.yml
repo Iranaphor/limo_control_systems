@@ -111,6 +111,7 @@ services:
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - TMULE_FILE=${TMULE_FILE:-}
+      - LAUNCH_CMD=${LAUNCH_CMD:-}
       - SLEEP_TIME=${SLEEP_TIME:-infinity}
       - MARKER_FILE=/home/ros/.colcon/.first_run_done
       - SDL_JOYSTICK_DEVICE=/dev/input/js0

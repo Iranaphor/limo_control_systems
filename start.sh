@@ -19,7 +19,7 @@ if [ ! -f "$MARKER_FILE" ]; then
     rosdep install --from-paths src --ignore-src -r -y --skip-keys "gazebo_ros gazebo_plugins"
 
     echo -e "\n\n\nClean Old Build Artefacts\n"
-    rm -r $HOME/ros2_ws/build $HOME/ros2_ws/install $HOME/ros2_ws/log
+    rm -rf $HOME/ros2_ws/build $HOME/ros2_ws/install $HOME/ros2_ws/log
 
     echo -e "\n\n\nBuilding Colcon Workspace at /home/ros/ros2_ws\n"
     #colcon build --symlink-install --packages-skip topological_navigation topological_utils topological_navigation_msgs ydlidar_ros2_driver limo_gazebosim limo_speaker voice_control astra_camera astra_camera_msgs
@@ -43,8 +43,13 @@ fi
 if [ -n "${TMULE_FILE:-}" ]; then
   echo "Launching tmule with TMULE_FILE=${TMULE_FILE}"
   tmule -c "$TMULE_FILE" launch
+elif [ -n "${LAUNCH_CMD:-}" ]; then
+  echo "Starting launch file with LAUNCH_CMD=${LAUNCH_CMD}"
+  bash -c "${LAUNCH_CMD}" &
 else
   echo "TMULE_FILE is not set, skipping tmule launch"
+  echo "TMULE_FILE=${TMULE_FILE}"
+  echo "LAUNCH_CMD=${LAUNCH_CMD}"
 fi
 
 echo "Sleeping for ${TOTAL_SLEEP_TIME}"
@@ -53,6 +58,10 @@ sleep "${TOTAL_SLEEP_TIME}"
 if [ -n "${TMULE_FILE:-}" ]; then
   echo "Terminating tmule with TMULE_FILE=${TMULE_FILE}"
   tmule -c "$TMULE_FILE" terminate
+elif [ -n "${LAUNCH_CMD:-}" ]; then
+  echo "Stopping container with launch file with LAUNCH_CMD=${LAUNCH_CMD}"
 else
   echo "TMULE_FILE is not set, skipping tmule terminate"
+  echo "TMULE_FILE=${TMULE_FILE}"
+  echo "LAUNCH_CMD=${LAUNCH_CMD}"
 fi

@@ -1,0 +1,22 @@
+---
+session: my_limo
+init_cmd: |
+  exec /bin/bash
+  cd @TMULE_CONFIG_DIR@ || true
+  set -o pipefail
+
+windows:
+
+
+- name: guis
+  panes:
+  - rviz2 -d ../config/topomap_marker.rviz
+#  - ros2 run rqt_tf_tree rqt_tf_tree
+  - ros2 run rqt_reconfigure rqt_reconfigure --force-discover
+
+- name: bag_and_amcl
+  panes:
+  - ros2 bag play rosbags/rosbag2_2026_04_09-08_11_32
+  - ros2 launch my_limo localisation.launch.py
+  - cat ../config/amcl_params.yml
+
