@@ -12,8 +12,9 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/config/', glob('config/*', recursive=True)),
-        ('share/' + package_name + '/launch/', glob('launch/*', recursive=True))
+        ('share/' + package_name + '/config/', glob('config/*.*')),
+        ('share/' + package_name + '/config/amcl_experiments/', glob('config/amcl_experiments/*')),
+        ('share/' + package_name + '/launch/', glob('launch/*.*'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,6 +27,7 @@ setup(
             'mqtt.py = my_limo.scripts.mqtt:main',
             'node_mapper.py = my_limo.scripts.node_mapper:main',
             'edge_mapper.py = my_limo.scripts.edge_mapper:main',
+            'amcl_debug_visualizer = my_limo.amcl_debug_visualizer:main',
         ],
     },
 
