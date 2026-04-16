@@ -6,6 +6,9 @@ init_cmd: |
   set -o pipefail
   #export NAV2_PARAMS="$HOME/ros2_ws/src/external/limo_platform/src/limo_ros2/src/limo_navigation/params/nav2_params.yaml"
   export NAV2_PARAMS="$HOME/ros2_ws/src/local/my_limo/config/nav2_params.yml"
+  export RVIZ_FILE="$HOME/ros2_ws/src/local/my_limo/config/topomap_marker.rviz"
+  export AMCL_PARAMS="$HOME/ros2_ws/src/local/my_limo/config/amcl_experiments/amcl_params_v19_sharp_map_match.yml"
+  function gotonode () { ros2 action send_goal /topological_navigation topological_navigation_msgs/action/GotoNode "{'target': '$1'}" ; }
 
 windows:
 
@@ -31,24 +34,24 @@ windows:
 
 - name: environment
   panes:
-  - ros2 launch environment_common environment.launch.py
-  - ros2 topic echo /map nav_msgs/msg/OccupancyGrid --once --no-arr --qos-reliability reliable --qos-durability transient_local
-  - sleep 30 ; ros2 run rqt_tf_tree rqt_tf_tree
+  - ros2 launch environment_common environment.launch.py rviz:=$RVIZ_FILE
+#  - ros2 topic echo /map nav_msgs/msg/OccupancyGrid --once --no-arr --qos-reliability reliable --qos-durability transient_local
+#  - sleep 30 ; ros2 run rqt_tf_tree rqt_tf_tree
 #  check: "ros2 topic echo /map nav_msgs/msg/OccupancyGrid --once --no-arr --qos-reliability reliable --qos-durability transient_local"
 
 - name: map_loc
   panes:
-  - ros2 launch my_limo localisation.launch.py
-  - nano ../config/amcl_params.yml
+  - ros2 launch my_limo localisation.launch.py params_file:=$AMCL_PARAMS
 
 - name: map_nav
   panes:
   - DISPLAY=:1 ; ros2 launch limo_navigation limo_controller.launch.py params_file:=$NAV2_PARAMS
 
-#- name: tmap_loc
-#  panes:
-#  - ros2 run topological_navigation localisation2.py
+- name: tmap_loc
+  panes:
+  - ros2 run topological_navigation localisation2.py
 
-#- name: tmap_nav
-#  panes:
-#  - ros2 run topological_navigation navigation2.py
+- name: tmap_nav
+  panes:
+  - ros2 run topological_navigation navigation2.py
+  - echo gotonode WayPoint8
