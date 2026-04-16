@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-cyclonedds \
     ros-humble-rqt-tf-tree \
     ros-humble-nav2-rviz-plugins \
+    ros-humble-nav2-dwb-controller \
+    ros-humble-nav2-navfn-planner \
     ros-humble-rqt* \
     && curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
       | gpg --dearmor -o /usr/share/keyrings/ros-archive-keyring.gpg \
