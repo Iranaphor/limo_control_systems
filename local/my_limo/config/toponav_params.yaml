@@ -1,0 +1,15 @@
+topological_navigation:
+  ros__parameters:
+    # Keep default planner strict enough so each intermediate waypoint is actually reached.
+    default_planner: "dwb_core::DWBLocalPlanner"
+    default_planner_xy_goal_tolerance: 0.2
+    default_planner_xy_yaw_goal_tolerance: 0.3
+
+    # Row traversal and goal align tolerances.
+    row_traversal_planner: "dwb_core::DWBLocalPlanner"
+    row_traversal_planner_xy_goal_tolerance: 0.1
+    row_traversal_planner_yaw_goal_tolerance: 0.1
+
+    goal_align_planner: "dwb_core::DWBLocalPlanner"
+    goal_align_planner_xy_goal_tolerance: 0.2
+    goal_align_planner_xy_yaw_goal_tolerance: 0.1

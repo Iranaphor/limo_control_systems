@@ -6,6 +6,7 @@ init_cmd: |
   set -o pipefail
   #export NAV2_PARAMS="$HOME/ros2_ws/src/external/limo_platform/src/limo_ros2/src/limo_navigation/params/nav2_params.yaml"
   export NAV2_PARAMS="$HOME/ros2_ws/src/local/my_limo/config/nav2_params.yml"
+  export TOPONAV_PARAMS="$HOME/ros2_ws/src/local/my_limo/config/toponav_params.yaml"
   export RVIZ_FILE="$HOME/ros2_ws/src/local/my_limo/config/topomap_marker.rviz"
   export AMCL_PARAMS="$HOME/ros2_ws/src/local/my_limo/config/amcl_experiments/amcl_params_v19_sharp_map_match.yml"
   function gotonode () { ros2 action send_goal /topological_navigation topological_navigation_msgs/action/GotoNode "{'target': '$1'}" ; }
@@ -53,5 +54,5 @@ windows:
 
 - name: tmap_nav
   panes:
-  - ros2 run topological_navigation navigation2.py
+  - ros2 run topological_navigation navigation2.py --ros-args --params-file $TOPONAV_PARAMS
 #  - echo gotonode WayPoint8
