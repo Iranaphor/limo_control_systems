@@ -89,6 +89,8 @@ services:
       dockerfile: Dockerfile
     pull_policy: never
     image: limo_control_systems:latest
+    container_name: limo_research
+    hostname: limo_research
     stdin_open: true
     tty: true
     ipc: host
@@ -109,13 +111,49 @@ services:
       - DISPLAY=${DISPLAY:-:0}
       - QT_X11_NO_MITSHM=1
       - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-35}
       - TMULE_FILE=${TMULE_FILE:-}
       - LAUNCH_CMD=${LAUNCH_CMD:-}
       - SLEEP_TIME=${SLEEP_TIME:-infinity}
       - MARKER_FILE=/home/ros/.colcon/.first_run_done
       - SDL_JOYSTICK_DEVICE=/dev/input/js0
     command: ["bash", "-l", "-c", "/home/ros/start.sh"]
+
+
+  topfleets_agent:
+    build:
+      context: ../topfleets_agent
+      dockerfile: docker/Dockerfile
+      args:
+        - ZENOH_BRIDGE_VERSION=1.5.0
+        - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+    container_name: topfleets_agent
+    hostname: topfleets_agent
+    ipc: host
+    networks:
+      - rosnet
+    tty: true
+    stdin_open: true
+    volumes:
+      # Mount helper scripts
+      - ../topfleets_agent/bash_scripts/container:/home/ros/bash_scripts:rw
+      # Mount ROS2 packages
+      - ../topfleets_agent/topfleets_agent_ros2:/home/ros/ros2_ws/src/topfleets_agent:rw
+      - ../topfleets_agent/topfleets_msgs:/home/ros/ros2_ws/src/topfleets_msgs:rw
+      - ../topfleets_agent/topological_navigation/topological_navigation_msgs:/home/ros/ros2_ws/src/toplogical_navigation_msgs:rw
+    environment:
+      # Define details of agent
+      - AGENT_ID=LM001535
+      - AGENT_CONFIGURATION=/home/ros/ros2_ws/src/topfleets_agent/config/agent/agilex_limo.yaml
+      # Define details of communication
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-35}
+      - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      - ZENOH_TCP_REMOTE=tcp/10.247.72.13:7447
+      - ZENOH_COORDINATION_CONF=/home/ros/ros2_ws/src/topfleets_agent/config/zenoh/topics.json5
+      - ZENOH_COORDINATION_NS_CONF=/home/ros/ros2_ws/src/topfleets_agent/config/zenoh/topics_ns.json5
+      - MQTT_IP='localhost'
+      - MQTT_PORT=${MQTT_PORT}                # i.e. 1883
+    command: ["bash", "-l", "-c", "/home/ros/bash_scripts/start.sh"]
 
 volumes:
   colcon_cache:

@@ -54,4 +54,4 @@ windows:
 - name: tmap_nav
   panes:
   - ros2 run topological_navigation navigation2.py
-  - echo gotonode WayPoint8
+#  - echo gotonode WayPoint8
